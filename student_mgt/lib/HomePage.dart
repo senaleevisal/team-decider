@@ -11,7 +11,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  TeamDivider students = TeamDivider();
+  late TeamDivider students = TeamDivider();
+  late List<List<Student>> groups;
+  @override
+  void setState(VoidCallback fn) {
+    for(int i  = 0; i<students.studentList.length;i+=5 ){
+      groups.add(students.getMembers(i+1));
+    }
+    super.setState(fn);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +38,7 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: List.generate(
                   (students.studentList.length == 0 ? 0 : ((students.studentList.length ~/ 5)+1)) ,
-                      (index) => Groups(members: students.getMembers(index+1),)
+                      (index) => Groups(members: groups[index],)
               ),
             ),
           ),
@@ -44,7 +52,9 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.fromLTRB(28, 0, 0, 0),
               child: FloatingActionButton(
                 onPressed: () {
-                  students.shuffleStudents();
+                  setState(() {
+                    students.studentList.shuffle();
+                  });
                 },
                 child: Icon(Icons.shuffle),
                 backgroundColor: Color.fromARGB(255, 7, 37, 59),
@@ -75,6 +85,7 @@ class _HomePageState extends State<HomePage> {
 
 class Groups extends StatefulWidget {
   const Groups({required this.members});
+
   final List<Student> members;
 
   @override
@@ -83,7 +94,9 @@ class Groups extends StatefulWidget {
 
 class _GroupsState extends State<Groups> {
   _GroupsState(this.members);
+
   final List<Student> members;
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -102,7 +115,10 @@ class _GroupsState extends State<Groups> {
           ),
           Divider(),
           Column(
-            children: members.map((member) => ListTile(title: Text(member.badge + " - " +member.name ))).toList(),
+            children: members
+                .map((member) =>
+                ListTile(title: Text(member.badge + " - " + member.name)))
+                .toList(),
           ),
         ],
       ),

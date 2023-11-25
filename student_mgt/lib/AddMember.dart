@@ -5,13 +5,15 @@ import 'package:student_mgt/main.dart';
 
 class AddMember extends StatefulWidget {
   final TeamDivider students;
+
+
   const AddMember({required this.students});
 
   @override
   State<AddMember> createState() => _AddMemberState(students);
 }
 
-class _AddMemberState extends State<AddMember> {
+class _AddMemberState extends State<AddMember>  {
   final nameContoller = TextEditingController();
   final batchContoller = TextEditingController();
   late var students;
